@@ -9,10 +9,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.wantech.potter.characters.domain.model.HarryCharacter
 import com.wantech.potter.characters.presentation.home.components.PotterItem
+import com.wantech.potter.core.util.Screen
 import com.wantech.potter.core.util.hasInternetConnection
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +59,12 @@ fun HomeScreen(navController: NavHostController) {
                             image = "https://ik.imagekit.io/hpapi/hermione.jpeg",
                             gender = "male",
                             ancestry = "half-blood"
-                        )
+                        ),
+                        onCharacterClick = {
+                            navController.navigate(Screen.Details.route + "/${it.characterId}") {
+
+                            }
+                        }
                     )
                 }
 

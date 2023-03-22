@@ -1,6 +1,7 @@
 package com.wantech.potter.characters.presentation.home.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -19,13 +20,18 @@ import coil.compose.rememberAsyncImagePainter
 import com.wantech.potter.characters.domain.model.HarryCharacter
 
 @Composable
-fun PotterItem(character: HarryCharacter, modifier: Modifier = Modifier) {
+fun PotterItem(
+    character: HarryCharacter,
+    modifier: Modifier = Modifier,
+    onCharacterClick: (HarryCharacter) -> Unit
+) {
     val painter =
         rememberAsyncImagePainter(model = character.image, contentScale = ContentScale.Crop)
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onCharacterClick(character) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -76,6 +82,9 @@ fun CharacterItemPreview() {
             image = "https://ik.imagekit.io/hpapi/harry.jpg",
             gender = "male",
             ancestry = "half-blood"
-        )
+        ),
+        onCharacterClick = {
+
+        }
     )
 }

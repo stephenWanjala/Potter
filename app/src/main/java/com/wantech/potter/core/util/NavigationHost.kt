@@ -13,8 +13,11 @@ fun NavigationHost(navController: NavHostController) {
         composable(Screen.Home.route){
             HomeScreen(navController = navController)
         }
-        composable(Screen.Details.route){
-            DetailsScreen(navController = navController)
+        composable(Screen.Details.route+"/{id}"){navBackStack->
+            val id = navBackStack.arguments?.getString("id")
+            if (id != null) {
+                DetailsScreen(navController = navController,itemId=id)
+            }
         }
     }
 }
