@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.wantech.potter.R
 import com.wantech.potter.characters.domain.model.HarryCharacter
 
 @Composable
@@ -26,7 +27,10 @@ fun PotterItem(
     onCharacterClick: (HarryCharacter) -> Unit
 ) {
     val painter =
-        rememberAsyncImagePainter(model = character.image, contentScale = ContentScale.Crop)
+        rememberAsyncImagePainter(
+            model = if (character.image.length < 2) R.drawable.images else character.image,
+            contentScale = ContentScale.Crop
+        )
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +48,7 @@ fun PotterItem(
             Image(
                 painter = painter,
                 contentDescription = character.name,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
@@ -56,13 +60,18 @@ fun PotterItem(
             ) {
                 Text(
                     text = character.name,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(text = character.gender)
+                    if (character.ancestry.length > 2) {
+                        Text(
+                            text = "Ancestry-${character.ancestry}",
+                            textAlign = TextAlign.Center,
 
-                    Text(text = "~${character.ancestry}", textAlign = TextAlign.Center)
+                            )
+                    }
                 }
 
             }

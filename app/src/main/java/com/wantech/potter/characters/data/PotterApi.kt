@@ -6,11 +6,10 @@ import retrofit2.http.Query
 
 interface PotterApi {
 
-    @GET("characters")
+    @GET("api/characters")
     suspend fun getCharacters(): List<CharactersItem>
-
     suspend fun getCharacterInfor(id: String): CharactersItem
 
-    @GET("house")
+    @GET("api/house")
     suspend fun getCharactersByHouses(@Query("house") house: String): List<CharactersItem>
 }

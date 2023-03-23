@@ -1,6 +1,8 @@
 package com.wantech.potter.di
 
 import com.wantech.potter.characters.data.PotterApi
+import com.wantech.potter.characters.data.repositoryImpl.PotterRepositoryImpl
+import com.wantech.potter.characters.domain.repository.PotterCharactersRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,5 +45,9 @@ object AppModule {
     @Provides
     fun provideApiService(retrofit: Retrofit): PotterApi = retrofit.create(PotterApi::class.java)
 
+    @Singleton
+    @Provides
+    fun providePotterRepository(api: PotterApi): PotterCharactersRepository =
+        PotterRepositoryImpl(api = api)
 
 }
