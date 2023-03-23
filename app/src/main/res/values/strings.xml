@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Potter</string>
+    <string name="error_unknown">Unknown Error Happened</string>
 </resources>

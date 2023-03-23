@@ -8,4 +8,6 @@ interface PotterCharactersRepository {
 
     suspend fun getCharacters(): Flow<Resource<List<CharactersItem>>>
     suspend fun getCharacterInfor(id: String): Resource<CharactersItem>
+
+    suspend fun getCharactersByHouses(house: String): Flow<Resource<List<CharactersItem>>>
 }

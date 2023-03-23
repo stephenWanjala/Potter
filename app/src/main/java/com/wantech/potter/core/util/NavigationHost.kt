@@ -16,7 +16,7 @@ fun NavigationHost(navController: NavHostController) {
         composable(Screen.Details.route+"/{id}"){navBackStack->
             val id = navBackStack.arguments?.getString("id")
             if (id != null) {
-                DetailsScreen(navController = navController,itemId=id)
+                DetailsScreen(itemId=id)
             }
         }
     }
