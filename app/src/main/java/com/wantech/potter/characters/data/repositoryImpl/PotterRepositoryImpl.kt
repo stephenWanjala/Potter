@@ -1,15 +1,24 @@
 package com.wantech.potter.characters.data.repositoryImpl
 
+import com.wantech.potter.characters.data.PotterApi
 import com.wantech.potter.characters.data.datasource.CharactersItem
 import com.wantech.potter.characters.domain.repository.PotterCharactersRepository
+import com.wantech.potter.core.util.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class PotterRepositoryImpl:PotterCharactersRepository {
-    override suspend fun getCharacters(): Flow<Result<List<CharactersItem>>> {
-        TODO("Not yet implemented")
+
+class PotterRepositoryImpl @Inject constructor(
+    private val api: PotterApi
+):PotterCharactersRepository {
+    override suspend fun getCharacters(): Flow<Resource<List<CharactersItem>>> {
+        return flow {
+
+        }
     }
 
-    override suspend fun getCharacterInfor(id: String): Result<CharactersItem> {
+    override suspend fun getCharacterInfor(id: String): Resource<CharactersItem> {
         TODO("Not yet implemented")
     }
 }
