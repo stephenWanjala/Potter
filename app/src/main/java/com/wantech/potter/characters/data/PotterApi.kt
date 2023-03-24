@@ -8,7 +8,6 @@ interface PotterApi {
 
     @GET("api/characters")
     suspend fun getCharacters(): List<CharactersItem>
-    suspend fun getCharacterInfor(id: String): CharactersItem
 
     @GET("api/house")
     suspend fun getCharactersByHouses(@Query("house") house: String): List<CharactersItem>

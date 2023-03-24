@@ -17,16 +17,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.gson.Gson
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wantech.potter.characters.data.datasource.CharactersItem
 import com.wantech.potter.characters.data.mappers.toHarryCharacter
 import com.wantech.potter.characters.presentation.destinations.DetailsScreenDestination
 import com.wantech.potter.characters.presentation.home.components.MSearchBar
 import com.wantech.potter.characters.presentation.home.components.PotterEvents
 import com.wantech.potter.characters.presentation.home.components.PotterItem
 import com.wantech.potter.core.util.hasInternetConnection
+import java.util.*
 
 @Destination(start = true)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,22 +53,35 @@ fun HomeScreen(
     LaunchedEffect(key1 = lazyListState.isScrollInProgress) {
         showSearch.value = false
     }
-    val renderList: MutableState<List<CharactersItem>> = remember {
-        mutableStateOf(emptyList())
-    }
+
     LaunchedEffect(key1 = searchQuery.value) {
         when (selectedChip.value) {
             0 -> {
-                characters = characters.filter { it.name.contains(searchQuery.value) }
+                characters = characters.filter {
+                    it.name.lowercase(Locale.ROOT)
+                        .contains(searchQuery.value.lowercase(Locale.ROOT))
+                }
             }
             1 -> {
-                characters = characters.filter { it.name.contains(searchQuery.value) }
+                characters = characters.filter {
+                    it.name.lowercase(Locale.ROOT)
+                        .contains(searchQuery.value.lowercase(Locale.ROOT))
+                }
 
             }
             2 -> {
 
-                viewModel.onEvent(PotterEvents.GetCharactersByName(searchQuery.value))
-                characters = characters.filter { it.house.contains(searchQuery.value) }
+                viewModel.onEvent(
+                    PotterEvents.GetCharactersByName(
+                        searchQuery.value.lowercase(
+                            Locale.ROOT
+                        )
+                    )
+                )
+                characters = characters.filter {
+                    it.house.lowercase(Locale.ROOT)
+                        .contains(searchQuery.value.lowercase(Locale.ROOT))
+                }
             }
         }
     }
@@ -133,12 +145,9 @@ fun HomeScreen(
                     state = lazyListState
                 ) {
                     items(characters) { character ->
-                        val gson = Gson().newBuilder().create()
-                        val gsonAdapter = gson.getAdapter(CharactersItem::class.java)
-                        val characterItem = gsonAdapter.toJson(character)
                         PotterItem(
                             character = character.toHarryCharacter(),
-                            onCharacterClick = { potter ->
+                            onCharacterClick = {
 
                                 navigator.navigate(DetailsScreenDestination.invoke(character)) {
 //                                    this.popUpTo(DetailsScreenDestination.route){
