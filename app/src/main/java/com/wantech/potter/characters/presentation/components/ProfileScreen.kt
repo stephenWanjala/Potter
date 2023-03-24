@@ -33,7 +33,7 @@ fun ProfileScreen(character: CharactersItem) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = rememberAsyncImagePainter(character.image),
+                painter = rememberAsyncImagePainter(character.image.ifEmpty { R.drawable.images }),
                 contentDescription = character.name,
                 modifier = Modifier
                     .size(200.dp)
