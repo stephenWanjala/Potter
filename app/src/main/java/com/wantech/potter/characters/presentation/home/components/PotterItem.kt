@@ -50,7 +50,8 @@ fun PotterItem(
                 contentDescription = character.name,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(96.dp)
+                    .aspectRatio(1f, true)
                     .clip(CircleShape)
             )
 

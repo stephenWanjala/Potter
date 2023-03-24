@@ -1,5 +1,9 @@
 package com.wantech.potter.characters.data.datasource
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CharactersItem(
     val actor: String,
     val alive: Boolean,
@@ -20,5 +24,5 @@ data class CharactersItem(
     val species: String,
     val wand: Wand,
     val wizard: Boolean,
-    val yearOfBirth: Int
-)
+    val yearOfBirth: Int?
+): Parcelable

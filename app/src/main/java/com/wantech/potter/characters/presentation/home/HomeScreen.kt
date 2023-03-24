@@ -1,7 +1,6 @@
 package com.wantech.potter.characters.presentation.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,41 +17,76 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import com.google.gson.Gson
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wantech.potter.characters.data.datasource.CharactersItem
 import com.wantech.potter.characters.data.mappers.toHarryCharacter
+import com.wantech.potter.characters.presentation.destinations.DetailsScreenDestination
 import com.wantech.potter.characters.presentation.home.components.MSearchBar
+import com.wantech.potter.characters.presentation.home.components.PotterEvents
 import com.wantech.potter.characters.presentation.home.components.PotterItem
-import com.wantech.potter.core.util.Screen
 import com.wantech.potter.core.util.hasInternetConnection
 
+@Destination(start = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController, viewModel: HomeScreenViewModel = hiltViewModel()) {
+fun HomeScreen(
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator
+) {
     val context = LocalContext.current
     val hasInternet = rememberSaveable {
         mutableStateOf(context.hasInternetConnection())
     }
-    val characters = viewModel.state.collectAsState().value.characters
+    var characters = viewModel.state.collectAsState().value.characters
     val state = viewModel.state.collectAsState()
     val lazyListState = rememberLazyListState()
     val showSearch = rememberSaveable {
         mutableStateOf(false)
     }
+    val searchQuery = remember {
+        mutableStateOf("")
+    }
+    val selectedChip = remember {
+        mutableStateOf(0)
+    }
     LaunchedEffect(key1 = lazyListState.isScrollInProgress) {
         showSearch.value = false
+    }
+    val renderList: MutableState<List<CharactersItem>> = remember {
+        mutableStateOf(emptyList())
+    }
+    LaunchedEffect(key1 = searchQuery.value) {
+        when (selectedChip.value) {
+            0 -> {
+                characters = characters.filter { it.name.contains(searchQuery.value) }
+            }
+            1 -> {
+                characters = characters.filter { it.name.contains(searchQuery.value) }
+
+            }
+            2 -> {
+
+                viewModel.onEvent(PotterEvents.GetCharactersByName(searchQuery.value))
+                characters = characters.filter { it.house.contains(searchQuery.value) }
+            }
+        }
     }
     val topAppBarState = rememberTopAppBarState()
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar = {
             if (showSearch.value) {
-                MSearchBar(viewModel = viewModel,
+                MSearchBar(
                     toggleShowSearch = {
                         showSearch.value = !showSearch.value
-                    }, showSearch = showSearch
+                    },
+                    showSearch = showSearch, selectedChip = selectedChip,
+                    searchQuery = searchQuery
                 )
             } else {
                 TopAppBar(title = { Text(text = "Harry Potter Characters") },
-                    scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = topAppBarState),
+                    scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState),
                     modifier = Modifier.fillMaxWidth(), actions = {
                         TextButton(onClick = { showSearch.value = !showSearch.value }) {
                             Text(text = "Search")
@@ -99,10 +133,19 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeScreenViewModel 
                     state = lazyListState
                 ) {
                     items(characters) { character ->
+                        val gson = Gson().newBuilder().create()
+                        val gsonAdapter = gson.getAdapter(CharactersItem::class.java)
+                        val characterItem = gsonAdapter.toJson(character)
                         PotterItem(
                             character = character.toHarryCharacter(),
                             onCharacterClick = { potter ->
-                                navController.navigate(route = Screen.Details.route + "/${potter.characterId}")
+
+                                navigator.navigate(DetailsScreenDestination.invoke(character)) {
+//                                    this.popUpTo(DetailsScreenDestination.route){
+//                                        inclusive = true
+//                                    }
+                                }
+
                             })
                     }
 
